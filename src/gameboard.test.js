@@ -5,10 +5,10 @@ describe('Gameboard: methodes', () => {
   test('getBoard', () => {
     const gameboard = Gameboard(4);
     expect(gameboard.getBoard()).toStrictEqual([
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      ['w', 'w', 'w', 'w'],
+      ['w', 'w', 'w', 'w'],
+      ['w', 'w', 'w', 'w'],
+      ['w', 'w', 'w', 'w'],
     ]);
   });
   describe('placeShip', () => {
@@ -18,8 +18,11 @@ describe('Gameboard: methodes', () => {
       const gameboard = Gameboard(2);
       expect(gameboard.placeShip(ship1, 0, 0)).toBe(true);
       expect(gameboard.getBoard()).toStrictEqual([
-        [1, 1],
-        [0, 0],
+        [
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+        ],
+        ['w', 'w'],
       ]);
     });
     test('placing ship out of bounds', () => {
@@ -27,16 +30,16 @@ describe('Gameboard: methodes', () => {
       expect(gameboard.placeShip(ship1, 2, 1)).toBe(false);
       expect(gameboard.placeShip(ship1, 1, 2, 'v')).toBe(false);
       expect(gameboard.getBoard()).toStrictEqual([
-        [0, 0],
-        [0, 0],
+        ['w', 'w'],
+        ['w', 'w'],
       ]);
     });
     test('placing ship partianaly out of bounds', () => {
       const gameboard = Gameboard(2);
       expect(gameboard.placeShip(ship1, 1, 1)).toBe(false);
       expect(gameboard.getBoard()).toStrictEqual([
-        [0, 0],
-        [0, 0],
+        ['w', 'w'],
+        ['w', 'w'],
       ]);
     });
     test('placing 2 ships', () => {
@@ -44,8 +47,14 @@ describe('Gameboard: methodes', () => {
       expect(gameboard.placeShip(ship1, 0, 0)).toBe(true);
       expect(gameboard.placeShip(ship2, 0, 1)).toBe(true);
       expect(gameboard.getBoard()).toStrictEqual([
-        [1, 1],
-        [2, 2],
+        [
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+        ],
+        [
+          { ship: ship2, x: 0, y: 1, dir: 'h' },
+          { ship: ship2, x: 0, y: 1, dir: 'h' },
+        ],
       ]);
     });
     test('placing overlapping ships', () => {
@@ -53,8 +62,11 @@ describe('Gameboard: methodes', () => {
       expect(gameboard.placeShip(ship1, 0, 0)).toBe(true);
       expect(gameboard.placeShip(ship2, 0, 0)).toBe(false);
       expect(gameboard.getBoard()).toStrictEqual([
-        [1, 1],
-        [0, 0],
+        [
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+        ],
+        ['w', 'w'],
       ]);
     });
   });
@@ -62,9 +74,9 @@ describe('Gameboard: methodes', () => {
     const gameboard = Gameboard(3);
     expect(gameboard.receiveAttack(0, 0)).toBe('miss');
     expect(gameboard.getBoard()).toStrictEqual([
-      [-1, 0, 0],
-      [0, 0, 0],
-      [0, 0, 0],
+      ['m', 'w', 'w'],
+      ['w', 'w', 'w'],
+      ['w', 'w', 'w'],
     ]);
   });
   test('receiveAttack hit', () => {
@@ -74,8 +86,8 @@ describe('Gameboard: methodes', () => {
     expect(gameboard.receiveAttack(0, 0)).toBe('hit');
     expect(ship.getHits()).toStrictEqual([true, false]);
     expect(gameboard.getBoard()).toStrictEqual([
-      [1, 0],
-      [1, 0],
+      ['h', 'w'],
+      [{ ship, x: 0, y: 0, dir: 'v' }, 'w'],
     ]);
   });
   test('receiveAttack on same place', () => {
@@ -88,8 +100,8 @@ describe('Gameboard: methodes', () => {
     expect(gameboard.receiveAttack(1, 1)).toBe('already attacked');
     expect(ship.getHits()).toStrictEqual([true, false]);
     expect(gameboard.getBoard()).toStrictEqual([
-      [1, 0],
-      [1, -1],
+      ['h', 'w'],
+      [{ ship, x: 0, y: 0, dir: 'v' }, 'm'],
     ]);
   });
   test('AllShipSunk', () => {

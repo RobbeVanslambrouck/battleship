@@ -1,74 +1,48 @@
 const Gameboard = (size = 10) => {
   const board = [];
   for (let i = 0; i < size; i += 1) {
-    board[i] = new Array(size).fill(0);
+    board[i] = new Array(size).fill('w');
   }
-  const ships = { freeKey: 1 };
+
+  const ships = [];
 
   const getBoard = () => board;
 
   const receiveAttack = (x, y) => {
-    if (board[y][x] === 0) {
-      board[y][x] = -1;
+    if (board[y][x] === 'w') {
+      board[y][x] = 'm';
       return 'miss';
     }
-    if (board[y][x] === -1) {
+
+    if (board[y][x] === 'm' || board[y][x] === 'h') {
       return 'already attacked';
     }
-    const shipKey = board[y][x];
-    const shipInfo = ships[shipKey];
+
+    const shipInfo = board[y][x];
     let place = 0;
+
     if (shipInfo.dir.match(/^(horizontal|h)$/i)) {
       place = x - shipInfo.x;
     }
     if (shipInfo.dir.match(/^(vertical|v)$/i)) {
       place = y - shipInfo.y;
     }
-    if (shipInfo.ship.isHitAt(x - shipInfo.x)) {
-      return 'already attacked';
-    }
+
     shipInfo.ship.hitAt(place);
+    board[y][x] = 'h';
     return 'hit';
   };
 
   const canPlaceShip = (ship, x, y, dir) => {
+    let posX = x;
+    let posY = y;
     if (x >= size || y >= size) {
       return false;
     }
-    if (dir.match(/^(horizontal|h)$/i)) {
-      let posX = x;
-      if (x + ship.getLength() > size) {
-        return false;
-      }
-      for (let i = 0; i < ship.getLength(); i += 1) {
-        if (board[y][posX] !== 0) {
-          return false;
-        }
-        posX += 1;
-      }
-    }
-    if (dir.match(/^(vertical|v)$/i)) {
-      let posY = y;
-      if (y + ship.getLength() > size) {
-        return false;
-      }
-      for (let i = 0; i < ship.getLength(); i += 1) {
-        if (board[posY][x] !== 0) {
-          return false;
-        }
-        posY += 1;
-      }
-    }
-
-    return true;
-  };
-  const placeShipOnGameboard = (ship, x, y, dir) => {
-    let posX = x;
-    let posY = y;
-    const key = ships.freeKey;
-    ships[key] = { ship, x: posX, y: posY, dir };
     for (let i = 0; i < ship.getLength(); i += 1) {
-      board[posY][posX] = key;
+      if (board[posY][posX] !== 'w') {
+        return false;
+      }
       if (dir.match(/^(horizontal|h)$/i)) {
         posX += 1;
       }
@@ -76,7 +50,21 @@ const Gameboard = (size = 10) => {
         posY += 1;
       }
     }
-    ships.freeKey += 1;
+    return true;
+  };
+  const placeShipOnGameboard = (ship, x, y, dir) => {
+    let posX = x;
+    let posY = y;
+    ships.push({ ship, x, y, dir });
+    for (let i = 0; i < ship.getLength(); i += 1) {
+      board[posY][posX] = ships[ships.length - 1];
+      if (dir.match(/^(horizontal|h)$/i)) {
+        posX += 1;
+      }
+      if (dir.match(/^(vertical|v)$/i)) {
+        posY += 1;
+      }
+    }
   };
 
   const placeShip = (ship, x, y, dir = 'h') => {
@@ -88,7 +76,7 @@ const Gameboard = (size = 10) => {
   };
 
   const areAllShipsSunk = () => {
-    for (let i = 1; i < ships.freeKey; i += 1) {
+    for (let i = 0; i < ships.length; i += 1) {
       if (!ships[i].ship.isSunk()) {
         return false;
       }

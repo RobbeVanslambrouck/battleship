@@ -11,11 +11,16 @@ const DomElements = (() => {
         cell.classList.add('cell');
         cell.id = `${j} ${i}`;
         switch (board[i][j]) {
-          case -1:
+          case 'm':
+            cell.classList.add('pin');
             cell.classList.add('miss');
             break;
-          case 0:
+          case 'w':
             cell.classList.add('water');
+            break;
+          case 'h':
+            cell.classList.add('pin');
+            cell.classList.add('hit');
             break;
           default:
             cell.classList.add('ship');
@@ -31,12 +36,10 @@ const DomElements = (() => {
   const renderPlayerBoard = (board) => {
     const playerBoard = document.querySelector('.playerBoard');
     playerBoard.append(createBoard(board));
-    console.log(board, playerBoard);
   };
   const renderEnemyBoard = (board) => {
     const enemyBoard = document.querySelector('.enemyBoard');
     enemyBoard.append(createBoard(board));
-    console.log(board);
   };
   return { renderPlayerBoard, renderEnemyBoard };
 })();

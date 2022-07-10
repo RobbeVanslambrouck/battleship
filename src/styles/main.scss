@@ -75,8 +75,8 @@ main {
 .water {
   background-color: $waterColor;
 }
-.miss {
-  background-color: $waterColor;
+
+.pin {
   &::before {
     content: '';
     display: inline-block;
@@ -87,17 +87,17 @@ main {
     border-radius: 50%;
   }
 }
-
-.hit {
+.miss {
   background-color: $waterColor;
   &::before {
-    content: '';
-    display: inline-block;
-    width: calc($cellSide/2);
-    height: calc($cellSide/2);
-    margin: calc($cellSide/4);
+    background-color: $missColor;
+  }
+}
+
+.hit {
+  background-color: $shipColor;
+  &::before {
     background-color: $hitColor;
-    border-radius: 50%;
   }
 }
 

@@ -15,6 +15,7 @@ const Game = (() => {
     const currPlayer = 0;
     const nextPlayer = (currPlayer + 1) % 2;
     players[currPlayer].turn(5, 5, players[nextPlayer]);
+    players[currPlayer].turn(5, 6, players[nextPlayer]);
     DomElements.renderPlayerBoard(
       players[currPlayer].getGameboard().getBoard()
     );

@@ -43,6 +43,7 @@ const DomElements = (() => {
   };
   const renderEnemyBoard = (board) => {
     const enemyBoard = document.querySelector('.enemyBoard');
+    enemyBoard.classList.add('enemy');
     enemyBoard.append(createBoard(board, false));
   };
   return { renderPlayerBoard, renderEnemyBoard };

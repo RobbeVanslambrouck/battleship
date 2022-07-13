@@ -14,6 +14,7 @@ describe('Gameboard: methodes', () => {
   describe('placeShip', () => {
     const ship1 = Ship(2);
     const ship2 = Ship(2);
+    const ship3 = Ship(2);
     test('placing 1 ship', () => {
       const gameboard = Gameboard(2);
       expect(gameboard.placeShip(ship1, 0, 0)).toBe(true);
@@ -36,7 +37,8 @@ describe('Gameboard: methodes', () => {
     });
     test('placing ship partianaly out of bounds', () => {
       const gameboard = Gameboard(2);
-      expect(gameboard.placeShip(ship1, 1, 1)).toBe(false);
+      expect(gameboard.placeShip(ship1, 1, 1, 'h')).toBe(false);
+      expect(gameboard.placeShip(ship1, 1, 1, 'v')).toBe(false);
       expect(gameboard.getBoard()).toStrictEqual([
         ['w', 'w'],
         ['w', 'w'],
@@ -68,6 +70,34 @@ describe('Gameboard: methodes', () => {
         ],
         ['w', 'w'],
       ]);
+    });
+    test('no ship bordering', () => {
+      const gameboard = Gameboard(2);
+      expect(gameboard.placeShip(ship1, 0, 0, 'h')).toBe(true);
+      expect(gameboard.placeShip(ship2, 0, 1, 'h', false)).toBe(false);
+      expect(gameboard.getBoard()).toStrictEqual([
+        [
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+          { ship: ship1, x: 0, y: 0, dir: 'h' },
+        ],
+        ['w', 'w'],
+      ]);
+      const gameboard2 = Gameboard(6);
+      expect(gameboard2.placeShip(ship1, 2, 2, 'h')).toBe(true);
+      expect(gameboard2.placeShip(ship2, 4, 2, 'h', false)).toBe(false);
+      expect(gameboard2.placeShip(ship3, 0, 2, 'h', false)).toBe(false);
+      expect(gameboard2.placeShip(ship2, 2, 0, 'v', false)).toBe(false);
+      expect(gameboard2.placeShip(ship3, 2, 3, 'v', false)).toBe(false);
+    });
+  });
+  describe('placeShipRandomly', () => {
+    test('shipPlacement', () => {
+      const gameboard = Gameboard(1);
+      const ship1 = Ship(1);
+      const ship2 = Ship(1);
+      expect(gameboard.placeShipRandomly(ship1)).toBe(true);
+      expect(gameboard.placeShipRandomly(ship2)).toBe(false);
+      expect(gameboard.getBoard()[0][0].ship).toStrictEqual(ship1);
     });
   });
   test('receiveAttack miss', () => {

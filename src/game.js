@@ -10,29 +10,17 @@ const Game = (() => {
     players[0] = Player('player');
     players[1] = Player('cpu');
 
-    const p0Carrier = Ship(5);
-    const p0Battleship = Ship(4);
-    const p0Destroyer = Ship(3);
-    const p0Submarine = Ship(3);
-    const p0Patrol = Ship(2);
+    const playerShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
 
-    players[0].getGameboard().placeShip(p0Carrier, 0, 0, 'h');
-    players[0].getGameboard().placeShip(p0Battleship, 0, 2, 'h');
-    players[0].getGameboard().placeShip(p0Destroyer, 0, 4, 'h');
-    players[0].getGameboard().placeShip(p0Submarine, 0, 6, 'h');
-    players[0].getGameboard().placeShip(p0Patrol, 0, 8, 'h');
+    for (let i = 0; i < playerShips.length; i += 1) {
+      players[0].getGameboard().placeShipRandomly(playerShips[i]);
+    }
 
-    const p1Carrier = Ship(5);
-    const p1Battleship = Ship(4);
-    const p1Destroyer = Ship(3);
-    const p1Submarine = Ship(3);
-    const p1Patrol = Ship(2);
+    const enemyShips = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
 
-    players[1].getGameboard().placeShip(p1Carrier, 0, 0, 'h');
-    players[1].getGameboard().placeShip(p1Battleship, 0, 2, 'h');
-    players[1].getGameboard().placeShip(p1Destroyer, 0, 4, 'h');
-    players[1].getGameboard().placeShip(p1Submarine, 0, 6, 'h');
-    players[1].getGameboard().placeShip(p1Patrol, 0, 8, 'h');
+    for (let i = 0; i < enemyShips.length; i += 1) {
+      players[1].getGameboard().placeShipRandomly(enemyShips[i]);
+    }
   };
 
   const startGame = () => {

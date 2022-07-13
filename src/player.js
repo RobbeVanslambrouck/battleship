@@ -69,7 +69,6 @@ const Player = (name) => {
         }
       }
     }
-    console.log(attackTable.length);
     const i = Math.round(Math.random() * (attackTable.length - 1));
     enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };

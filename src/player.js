@@ -24,47 +24,79 @@ const Player = (name) => {
         }
       }
     }
-    const i = Math.round(Math.random() * (attackable.length - 1));
+    const i = Math.floor(Math.random() * attackable.length);
     enemy.getGameboard().receiveAttack(attackable[i].x, attackable[i].y);
   };
 
-  const getCellvalue = (x, y, board) => {
-    let cellValue = 0;
-    if (y < board.length - 1) {
-      if (board[y + 1][x] === 'h') cellValue += 4;
-      if (board[y + 1][x] === 'm') cellValue -= 1;
-    }
-    if (y > 0) {
-      if (board[y - 1][x] === 'h') cellValue += 4;
-      if (board[y - 1][x] === 'm') cellValue -= 1;
-    }
-    if (x < board.length - 1) {
-      if (board[y][x + 1] === 'h') cellValue += 4;
-      if (board[y][x + 1] === 'm') cellValue -= 1;
-    }
-    if (x > 0) {
-      if (board[y][x - 1] === 'h') cellValue += 4;
-      if (board[y][x - 1] === 'm') cellValue -= 1;
-    }
-    return cellValue;
+  const getTileValue = (x, y, board) => {
+    const HIT = 4;
+    let value = 0;
+    const extBrd = [];
+    extBrd.push(new Array(board.length + 2).fill('w'));
+    board.forEach((row) => {
+      const extRow = ['w', ...row, 'w'];
+      extBrd.push(extRow);
+    });
+    extBrd.push(new Array(board.length + 2).fill('w'));
+    const extX = x + 1;
+    const extY = y + 1;
+
+    if (extBrd[extY + 1][extX] === 'h' && extBrd[extY - 1][extX] === 'h')
+      value += 4;
+    if (extBrd[extY][extX + 1] === 'h' && extBrd[extY][extX - 1] === 'h')
+      value += 4;
+
+    if (
+      extBrd[extY + 1][extX] === 'h' &&
+      (extBrd[extY + 1][extX - 1] === 'h' || extBrd[extY + 1][extX + 1] === 'h')
+    )
+      value -= HIT;
+    if (
+      extBrd[extY - 1][extX] === 'h' &&
+      (extBrd[extY - 1][extX - 1] === 'h' || extBrd[extY - 1][extX + 1] === 'h')
+    )
+      value -= HIT;
+    if (
+      extBrd[extY][extX + 1] === 'h' &&
+      (extBrd[extY - 1][extX + 1] === 'h' || extBrd[extY + 1][extX + 1] === 'h')
+    )
+      value -= HIT;
+    if (
+      extBrd[extY][extX - 1] === 'h' &&
+      (extBrd[extY - 1][extX - 1] === 'h' || extBrd[extY + 1][extX - 1] === 'h')
+    )
+      value -= HIT;
+    if (extBrd[extY + 1][extX] === 'h') value += HIT;
+    if (extBrd[extY - 1][extX] === 'h') value += HIT;
+    if (extBrd[extY][extX + 1] === 'h') value += HIT;
+    if (extBrd[extY][extX - 1] === 'h') value += HIT;
+    if (extBrd[extY + 1][extX] === 'm') value -= 1;
+    if (extBrd[extY + 1][extX] === 's') value -= 1;
+    if (extBrd[extY - 1][extX] === 'm') value -= 1;
+    if (extBrd[extY - 1][extX] === 's') value -= 1;
+    if (extBrd[extY][extX + 1] === 'm') value -= 1;
+    if (extBrd[extY][extX + 1] === 's') value -= 1;
+    if (extBrd[extY][extX - 1] === 'm') value -= 1;
+    if (extBrd[extY][extX - 1] === 's') value -= 1;
+    return value;
   };
 
   const AISmartTurn = (enemy) => {
     let attackTable = [];
-    let maxCellValue = -Infinity;
+    let maxTileValue = -Infinity;
     const enemyBoard = enemy.getGameboard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
-        if (enemyBoard[i][j] !== 'h' && enemyBoard[i][j] !== 'm') {
-          const cellValue = getCellvalue(j, i, enemyBoard);
-          if (cellValue === maxCellValue) {
-            attackTable.push({ x: j, y: i, cellValue });
+        if (enemyBoard[i][j] === 'w' || typeof enemyBoard[i][j] === 'object') {
+          const tileValue = getTileValue(j, i, enemyBoard);
+          if (tileValue === maxTileValue) {
+            attackTable.push({ x: j, y: i, cellValue: tileValue });
           }
 
-          if (cellValue > maxCellValue) {
-            maxCellValue = cellValue;
+          if (tileValue > maxTileValue) {
+            maxTileValue = tileValue;
             attackTable = [];
-            attackTable.push({ x: j, y: i, cellValue });
+            attackTable.push({ x: j, y: i, cellValue: tileValue });
           }
         }
       }
@@ -78,11 +110,7 @@ const Player = (name) => {
     const enemyBoard = enemy.getGameboard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
-        if (
-          enemyBoard[i][j] !== 'h' &&
-          enemyBoard[i][j] !== 'm' &&
-          enemyBoard[i][j] !== 'w'
-        ) {
+        if (typeof enemyBoard[i][j] === 'object') {
           attackTable.push({ x: j, y: i });
         }
       }
@@ -101,11 +129,7 @@ const Player = (name) => {
     const enemyBoard = enemy.getGameboard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
-        if (
-          enemyBoard[i][j] !== 'h' &&
-          enemyBoard[i][j] !== 'm' &&
-          enemyBoard[i][j] !== 'w'
-        ) {
+        if (typeof enemyBoard[i][j] === 'object') {
           attackTable.push({ x: j, y: i });
         }
       }

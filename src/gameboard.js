@@ -17,13 +17,27 @@ const Gameboard = (size = 10) => {
 
   const getBoard = () => board;
 
+  const placeSunkShipOnGameboard = ({ ship, x, y, dir }) => {
+    let posX = x;
+    let posY = y;
+    for (let i = 0; i < ship.getLength(); i += 1) {
+      board[posY][posX] = 's';
+      if (dir.match(/^(horizontal|h)$/i)) {
+        posX += 1;
+      }
+      if (dir.match(/^(vertical|v)$/i)) {
+        posY += 1;
+      }
+    }
+  };
+
   const receiveAttack = (x, y) => {
     if (board[y][x] === 'w') {
       board[y][x] = 'm';
       return 'miss';
     }
 
-    if (board[y][x] === 'm' || board[y][x] === 'h') {
+    if (board[y][x] === 'm' || board[y][x] === 'h' || board[y][x] === 's') {
       return 'already attacked';
     }
 
@@ -38,6 +52,11 @@ const Gameboard = (size = 10) => {
     }
 
     shipInfo.ship.hitAt(place);
+    if (shipInfo.ship.isSunk()) {
+      placeSunkShipOnGameboard(shipInfo);
+      board[y][x] = 's';
+      return 'hit and sunk';
+    }
     board[y][x] = 'h';
     return 'hit';
   };

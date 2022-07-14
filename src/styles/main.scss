@@ -2,8 +2,8 @@
 
 $headerHeigt: 5rem;
 $footerHeigt: 5rem;
-$cellSide: 3rem;
-$cellBorder: 2px solid #83EB21;
+$tileSide: 3rem;
+$tileBorder: 2px solid #83EB21;
 $waterColor: #122901;
 $shipColor: #6FC81A;
 $missColor: #ffffff;
@@ -13,9 +13,9 @@ $hitColor: #b11313;
   &::before {
     content: '';
     display: inline-block;
-    width: calc($cellSide/2);
-    height: calc($cellSide/2);
-    margin: 4px calc($cellSide/2) calc($cellSide/2) 4px;
+    width: calc($tileSide/2);
+    height: calc($tileSide/2);
+    margin: 4px calc($tileSide/2) calc($tileSide/2) 4px;
     background-color: $pinColor;
     border-radius: 50%;
     box-shadow: 4px 4px 0 0 darken($pinColor, $amount: 10%);
@@ -24,7 +24,7 @@ $hitColor: #b11313;
 }
 
 @mixin hoverTarget {
-  @keyframes cellhover {
+  @keyframes tilehover {
     0% { background-color: $missColor;
       box-shadow: 4px 4px 0 0 darken($missColor, $amount: 10%);
     }
@@ -35,7 +35,7 @@ $hitColor: #b11313;
   &:hover {
     @include pin($missColor);
     &::before {
-      animation-name: cellhover;
+      animation-name: tilehover;
       animation-duration: 1s;
       animation-iteration-count: infinite;
       animation-direction: alternate;
@@ -86,22 +86,22 @@ main {
 .row {
   display: flex;
   justify-content: center;
-  border-left: $cellBorder;
+  border-left: $tileBorder;
   
   &:first-child{
-    border-top: $cellBorder;
+    border-top: $tileBorder;
 
   }
   
 
 }
   
-.cell {
+.tile {
   display: inline-block;
-  border-bottom: $cellBorder;
-  border-right: $cellBorder;
-  width: $cellSide;
-  height: $cellSide;
+  border-bottom: $tileBorder;
+  border-right: $tileBorder;
+  width: $tileSide;
+  height: $tileSide;
 }
 
 .enemy {
@@ -126,6 +126,10 @@ main {
 
 .ship {
   background-color: $shipColor;
+}
+
+.sunk {
+  background-color: rgba($hitColor, $alpha: 0.6);
 }
 
 footer {

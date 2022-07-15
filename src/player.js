@@ -16,17 +16,17 @@ const Player = (name) => {
   const turn = (x, y, enemy) => enemy.getGameboard().receiveAttack(x, y);
 
   const AIRandomTurn = (enemy) => {
-    const attackable = [];
+    const attackTable = [];
     const enemyBoard = enemy.getGameboard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
         if (enemyBoard[i][j] !== 'h' && enemyBoard[i][j] !== 'm') {
-          attackable.push({ x: j, y: i });
+          attackTable.push({ x: j, y: i });
         }
       }
     }
-    const i = Math.floor(Math.random() * attackable.length);
-    enemy.getGameboard().receiveAttack(attackable[i].x, attackable[i].y);
+    const i = randInt(0, attackTable.length - 1);
+    enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 
   const getTileValue = (x, y, board) => {
@@ -120,8 +120,7 @@ const Player = (name) => {
       AIRandomTurn(enemy);
       return;
     }
-    console.log(attackTable.length);
-    const i = Math.round(Math.random() * (attackTable.length - 1));
+    const i = randInt(0, attackTable.length - 1);
     enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 

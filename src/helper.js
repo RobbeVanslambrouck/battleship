@@ -21,3 +21,9 @@ export function randInt(min, max) {
   const randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
   return randomInt;
 }
+
+export function delay(milliseconds) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, milliseconds);
+  });
+}

@@ -69,11 +69,90 @@ const DomElements = (() => {
   };
 
   const clearGame = () => {
-    game.querySelector('.game');
     game.innerHTML = '';
   };
 
-  return { renderBoard, updateBoard, clearGame };
+  const renderHomePage = (playSubTopic, gameModes = []) => {
+    const main = document.querySelector('main');
+    const divHome = document.createElement('div');
+    divHome.classList.add('home');
+
+    const selectGameMode = document.createElement('select');
+    selectGameMode.name = 'gameMode';
+    selectGameMode.id = 'gameMode';
+    gameModes.forEach((mode) => {
+      const gameMode = document.createElement('option');
+      gameMode.value = mode;
+      gameMode.textContent = mode;
+      selectGameMode.append(gameMode);
+    });
+    divHome.append(selectGameMode);
+
+    const btnPlay = document.createElement('button');
+    btnPlay.type = 'button';
+    btnPlay.textContent = 'play game';
+    btnPlay.onclick = (e) => {
+      e.stopPropagation();
+      const gameMode = selectGameMode.value;
+      PubSub.publish(playSubTopic, { gameMode });
+      divHome.remove();
+    };
+    divHome.prepend(btnPlay);
+
+    main.append(divHome);
+  };
+
+  const showGameOverModal = (replaySubTopic, HomeSubTopic, winner) => {
+    const divModal = document.createElement('div');
+    divModal.classList.add('modal');
+    divModal.id = 'gameOverModal';
+
+    const divGameOverModal = document.createElement('div');
+    divGameOverModal.classList.add('modal-content');
+    divModal.append(divGameOverModal);
+
+    const pGameOver = document.createElement('p');
+    pGameOver.classList.add('modal-title');
+    pGameOver.textContent = 'game over';
+    divGameOverModal.append(pGameOver);
+
+    const pWinner = document.createElement('p');
+    pWinner.classList.add('modal-msg');
+    pWinner.textContent = `${winner} won`;
+    divGameOverModal.append(pWinner);
+
+    const btnPlayAgain = document.createElement('button');
+    btnPlayAgain.classList.add('modal-action');
+    btnPlayAgain.textContent = 'play again';
+    btnPlayAgain.type = 'button';
+    btnPlayAgain.onclick = (e) => {
+      e.stopPropagation();
+      divModal.remove();
+      PubSub.publish(replaySubTopic, {});
+    };
+    divGameOverModal.append(btnPlayAgain);
+
+    const btnCancel = document.createElement('button');
+    btnCancel.classList.add('modal-cancel');
+    btnCancel.textContent = 'back to menu';
+    btnCancel.type = 'button';
+    btnCancel.onclick = (e) => {
+      e.stopPropagation();
+      divModal.remove();
+      PubSub.publish(HomeSubTopic, {});
+    };
+    divGameOverModal.append(btnCancel);
+
+    document.querySelector('main').append(divModal);
+  };
+
+  return {
+    renderBoard,
+    updateBoard,
+    clearGame,
+    renderHomePage,
+    showGameOverModal,
+  };
 })();
 
 export default DomElements;

@@ -1,5 +1,5 @@
 import Gameboard from './gameboard';
-import { randInt } from './helper';
+import { randInt, delay } from './helper';
 
 const Player = (name) => {
   let thisName = name;
@@ -82,7 +82,7 @@ const Player = (name) => {
     return value;
   };
 
-  const AISmartTurn = (enemy) => {
+  const AISmartTurn = async (enemy, milliseconds = 100) => {
     let attackTable = [];
     let maxTileValue = -Infinity;
     const enemyBoard = enemy.getGameboard().getBoard();
@@ -103,6 +103,7 @@ const Player = (name) => {
       }
     }
     const i = randInt(0, attackTable.length - 1);
+    await delay(milliseconds);
     enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 

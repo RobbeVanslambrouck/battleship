@@ -48,7 +48,7 @@ test('AIRandomTurn', () => {
   expect(enemy.getGameboard().getBoard()).toStrictEqual(board.getBoard());
 });
 
-test('AISmartTurn', () => {
+test('AISmartTurn', async () => {
   const player = Player('p1');
   const enemy = Player('p2');
   enemy.setGameboard(Gameboard(2));

@@ -1,10 +1,11 @@
 import shuffle from './helper';
 
 /*
-  the gameboard is an array were the cells are: 
+  the gameboard is an array were the tiles are: 
   - 'w' (water)
   - 'h' (hit)
   - 'm' (miss)
+  - 's' (sunk)
   - { ship, x, y, dir} (a ship object with the coordinates of the fist schip section and its direction either 'h' or 'v')
 */
 const Gameboard = (size = 10) => {

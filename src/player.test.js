@@ -57,9 +57,9 @@ test('AISmartTurn', async () => {
   board.receiveAttack(0, 1);
   board.receiveAttack(1, 0);
   board.receiveAttack(1, 1);
-  player.AISmartTurn(enemy);
-  player.AISmartTurn(enemy);
-  player.AISmartTurn(enemy);
-  player.AISmartTurn(enemy);
+  await player.AISmartTurn(enemy);
+  await player.AISmartTurn(enemy);
+  await player.AISmartTurn(enemy);
+  await player.AISmartTurn(enemy);
   expect(enemy.getGameboard().getBoard()).toStrictEqual(board.getBoard());
 });

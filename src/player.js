@@ -1,4 +1,5 @@
 import Gameboard from './gameboard';
+import { randInt } from './helper';
 
 const Player = (name) => {
   let thisName = name;
@@ -90,18 +91,18 @@ const Player = (name) => {
         if (enemyBoard[i][j] === 'w' || typeof enemyBoard[i][j] === 'object') {
           const tileValue = getTileValue(j, i, enemyBoard);
           if (tileValue === maxTileValue) {
-            attackTable.push({ x: j, y: i, cellValue: tileValue });
+            attackTable.push({ x: j, y: i, tileValue });
           }
 
           if (tileValue > maxTileValue) {
             maxTileValue = tileValue;
             attackTable = [];
-            attackTable.push({ x: j, y: i, cellValue: tileValue });
+            attackTable.push({ x: j, y: i, tileValue });
           }
         }
       }
     }
-    const i = Math.round(Math.random() * (attackTable.length - 1));
+    const i = randInt(0, attackTable.length - 1);
     enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 

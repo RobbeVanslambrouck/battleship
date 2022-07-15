@@ -13,3 +13,11 @@ export default function shuffle(array) {
 
   return shuffledArray;
 }
+
+export function randInt(min, max) {
+  if (min > max) {
+    return NaN;
+  }
+  const randomInt = Math.floor(Math.random() * (max - min + 1)) + min;
+  return randomInt;
+}

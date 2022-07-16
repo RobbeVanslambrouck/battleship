@@ -213,38 +213,45 @@ const Game = (() => {
     );
 
     while (!gameOver) {
-      console.log('turn p1');
       let res1;
+      let res2;
+      let attackCoords;
       const p1Input = new Promise((resolve) => {
         res1 = resolve;
       });
-      PubSub.subscribe(P1_INPUT_TOPIC, () => {
+      PubSub.subscribe(P1_INPUT_TOPIC, (msg, data) => {
         PubSub.unsubscribe(P1_INPUT_TOPIC);
-        res1();
+        res1(data);
       });
-      await p1Input;
-      console.log(p1Input);
+      attackCoords = await p1Input;
+      console.log(attackCoords);
       // player 1 input
-      DomElements.updateBoard(0, players[0].getGameboard().getBoard());
+      DomElements.updateBoard(
+        0,
+        players[0].getGameboard().getBoard(),
+        P2_INPUT_TOPIC
+      );
       gameOver = players[1].getGameboard().areAllShipsSunk();
       if (gameOver) {
         winner = players[0].getName();
         break;
       }
 
-      console.log('turn p2');
-      let res2;
       const p2Input = new Promise((resolve) => {
         res2 = resolve;
       });
-      PubSub.subscribe(P2_INPUT_TOPIC, () => {
+      PubSub.subscribe(P2_INPUT_TOPIC, (msg, data) => {
         PubSub.unsubscribe(P2_INPUT_TOPIC);
-        res2();
+        res2(data);
       });
-      await p2Input;
-      console.log(p2Input);
+      attackCoords = await p2Input;
+      console.log(attackCoords);
       // player 2 input
-      DomElements.updateBoard(1, players[1].getGameboard().getBoard());
+      DomElements.updateBoard(
+        1,
+        players[1].getGameboard().getBoard(),
+        P1_INPUT_TOPIC
+      );
       gameOver = players[0].getGameboard().areAllShipsSunk();
       if (gameOver) {
         winner = players[1].getName();

@@ -77,7 +77,6 @@ const Game = (() => {
       showHomeScreen();
     });
     DomElements.showGameOverModal(REPLAY_TOPIC, BACK_HOME_TOPIC, winner);
-    console.log('game over');
   };
 
   const cpuVsPlayer = () => {
@@ -179,8 +178,97 @@ const Game = (() => {
     tokenAttack = PubSub.subscribe(ATTACK_TOPIC, attackSub);
   };
 
-  const PlayerVsPlayer = () => {
+  const PlayerVsPlayer = async () => {
     console.log('not yet implemented');
+    let gameOver = false;
+    let winner = '';
+    const P1_INPUT_TOPIC = 'p1Input';
+    const P2_INPUT_TOPIC = 'p2Input';
+
+    players[0] = Player('player 1');
+    players[1] = Player('player 2');
+
+    const player1Ships = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
+    const player2Ships = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
+
+    for (let i = 0; i < player1Ships.length; i += 1) {
+      players[0].getGameboard().placeShipRandomly(player1Ships[i]);
+    }
+    for (let i = 0; i < player2Ships.length; i += 1) {
+      players[1].getGameboard().placeShipRandomly(player2Ships[i]);
+    }
+
+    DomElements.renderBoard(
+      players[0].getGameboard().getBoard(),
+      'player',
+      0,
+      P2_INPUT_TOPIC
+    );
+
+    DomElements.renderBoard(
+      players[1].getGameboard().getBoard(),
+      'player',
+      1,
+      P1_INPUT_TOPIC
+    );
+
+    while (!gameOver) {
+      console.log('turn p1');
+      let res1;
+      const p1Input = new Promise((resolve) => {
+        res1 = resolve;
+      });
+      PubSub.subscribe(P1_INPUT_TOPIC, () => {
+        PubSub.unsubscribe(P1_INPUT_TOPIC);
+        res1();
+      });
+      await p1Input;
+      console.log(p1Input);
+      // player 1 input
+      DomElements.updateBoard(0, players[0].getGameboard().getBoard());
+      gameOver = players[1].getGameboard().areAllShipsSunk();
+      if (gameOver) {
+        winner = players[0].getName();
+        break;
+      }
+
+      console.log('turn p2');
+      let res2;
+      const p2Input = new Promise((resolve) => {
+        res2 = resolve;
+      });
+      PubSub.subscribe(P2_INPUT_TOPIC, () => {
+        PubSub.unsubscribe(P2_INPUT_TOPIC);
+        res2();
+      });
+      await p2Input;
+      console.log(p2Input);
+      // player 2 input
+      DomElements.updateBoard(1, players[1].getGameboard().getBoard());
+      gameOver = players[0].getGameboard().areAllShipsSunk();
+      if (gameOver) {
+        winner = players[1].getName();
+        break;
+      }
+    }
+
+    let tokenReplay = '';
+    let tokenHome = '';
+    const REPLAY_TOPIC = 'replay';
+    const BACK_HOME_TOPIC = 'backHome';
+    tokenReplay = PubSub.subscribe(REPLAY_TOPIC, () => {
+      PubSub.unsubscribe(tokenReplay);
+      PubSub.unsubscribe(tokenHome);
+      DomElements.clearGame();
+      PlayerVsPlayer();
+    });
+    tokenHome = PubSub.subscribe(BACK_HOME_TOPIC, () => {
+      PubSub.unsubscribe(tokenReplay);
+      PubSub.unsubscribe(tokenHome);
+      DomElements.clearGame();
+      showHomeScreen();
+    });
+    DomElements.showGameOverModal(REPLAY_TOPIC, BACK_HOME_TOPIC, winner);
   };
 
   const startGame = () => {

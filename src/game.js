@@ -5,7 +5,7 @@ import Player from './player';
 import Ship from './ship';
 
 const Game = (() => {
-  const gameModes = ['CPU_VS_PLAYER', 'CPU_FIGHT', 'PLAYER_VS_PLAYER'];
+  const gameModes = ['CPU_VS_PLAYER', 'CPU_VS_CPU', 'PLAYER_VS_PLAYER'];
   let gameMode = gameModes[1];
   const getGameModes = () => gameModes;
   const setGameMode = (mode) => {
@@ -196,7 +196,7 @@ const Game = (() => {
   };
 
   const startGame = () => {
-    if (gameMode === 'CPU_FIGHT') {
+    if (gameMode === 'CPU_VS_CPU') {
       cpuVsCpu();
       return;
     }

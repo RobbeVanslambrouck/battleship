@@ -5,13 +5,13 @@ import Game from './game';
 const App = (() => {
   const showHomeScreen = () => {
     const PLAY_GAME_TOPIC = 'btnPlayGame';
+    PubSub.clearAllSubscriptions(PLAY_GAME_TOPIC);
     const gameModes = Game.getGameModes().map((mode) =>
       mode.toLocaleLowerCase().replaceAll('_', ' ')
     );
     DomElements.renderHomePage(PLAY_GAME_TOPIC, gameModes);
 
     let playGameToken = '';
-    console.log(PLAY_GAME_TOPIC);
     playGameToken = PubSub.subscribe(PLAY_GAME_TOPIC, (msg, data) => {
       const gameMode = data.gameMode.replaceAll(' ', '_').toUpperCase();
       PubSub.unsubscribe(playGameToken);
@@ -21,6 +21,12 @@ const App = (() => {
   };
 
   const start = () => {
+    const h1 = document.querySelector('#title-link');
+    h1.onclick = (e) => {
+      e.preventDefault();
+      DomElements.clearGame();
+      App.start();
+    };
     showHomeScreen();
   };
 

@@ -74,6 +74,9 @@ const DomElements = (() => {
 
   const renderHomePage = (playSubTopic, gameModes = []) => {
     const main = document.querySelector('main');
+    if (document.querySelector('.home')) {
+      document.querySelector('.home').remove();
+    }
     const divHome = document.createElement('div');
     divHome.classList.add('home');
 

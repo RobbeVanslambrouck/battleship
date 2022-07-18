@@ -79,12 +79,12 @@ const Game = (() => {
     DomElements.showGameOverModal(REPLAY_TOPIC, BACK_HOME_TOPIC, winner);
   };
 
-  const cpuVsPlayer = () => {
+  const cpuVsPlayer = async () => {
     const PLAYER = 0;
     const ENEMY = 1;
-    const ATTACK_TOPIC = 'attack';
-    const REPLAY_TOPIC = 'replay';
-    const BACK_HOME_TOPIC = 'backHome';
+    const INPUT_TOPIC = 'attack';
+    let gameOver = false;
+    let winner = '';
     players[0] = Player('player');
     players[1] = Player('cpu');
 
@@ -104,7 +104,7 @@ const Game = (() => {
       players[ENEMY].getGameboard().getBoard(),
       'enemy',
       1,
-      ATTACK_TOPIC
+      INPUT_TOPIC
     );
 
     DomElements.renderBoard(
@@ -113,69 +113,67 @@ const Game = (() => {
       0
     );
 
-    let tokenAttack = '';
-    let tokenReplay = '';
-    let tokenHome = '';
-    const attackSub = async (msg, data) => {
-      PubSub.unsubscribe(tokenAttack);
-      const turnMsg = players[PLAYER].turn(data.x, data.y, players[ENEMY]);
+    let res;
+    const playerInputProm = (resolve) => {
+      res = resolve;
+    };
+    const playerInputSub = (msg, data) => {
+      PubSub.unsubscribe(INPUT_TOPIC);
+      const turnMsg = players[0].turn(data.x, data.y, players[1]);
       if (turnMsg === 'already attacked') {
-        tokenAttack = PubSub.subscribe(ATTACK_TOPIC, attackSub);
+        PubSub.subscribe(INPUT_TOPIC, playerInputSub);
         return;
       }
+      res(data);
+    };
+
+    while (!gameOver) {
+      // player turn
+      const playerInput = new Promise(playerInputProm);
+      PubSub.subscribe(INPUT_TOPIC, playerInputSub);
+      // wait for player input
+      await playerInput;
+      // update cpu board
       DomElements.updateBoard(
         1,
         players[ENEMY].getGameboard().getBoard(),
-        ATTACK_TOPIC
+        INPUT_TOPIC
       );
-      const playerWon = players[ENEMY].getGameboard().areAllShipsSunk();
-      if (playerWon) {
-        tokenReplay = PubSub.subscribe(REPLAY_TOPIC, () => {
-          PubSub.unsubscribe(tokenReplay);
-          PubSub.unsubscribe(tokenHome);
-          DomElements.clearGame();
-          cpuVsPlayer();
-        });
-        tokenHome = PubSub.subscribe(BACK_HOME_TOPIC, () => {
-          PubSub.unsubscribe(tokenReplay);
-          PubSub.unsubscribe(tokenHome);
-          DomElements.clearGame();
-          showHomeScreen();
-        });
-        DomElements.showGameOverModal(
-          REPLAY_TOPIC,
-          BACK_HOME_TOPIC,
-          players[PLAYER].getName()
-        );
-        return;
+      // check if gameover
+      gameOver = players[ENEMY].getGameboard().areAllShipsSunk();
+      if (gameOver) {
+        winner = players[PLAYER].getName();
+        break;
       }
+      // cpu turn
       await players[ENEMY].AISmartTurn(players[PLAYER], 300);
+      // update player board
       DomElements.updateBoard(0, players[PLAYER].getGameboard().getBoard());
-      const EnemyWon = players[PLAYER].getGameboard().areAllShipsSunk();
-      if (EnemyWon) {
-        tokenReplay = PubSub.subscribe(REPLAY_TOPIC, () => {
-          PubSub.unsubscribe(tokenReplay);
-          PubSub.unsubscribe(tokenHome);
-          DomElements.clearGame();
-          cpuVsPlayer();
-        });
-        tokenHome = PubSub.subscribe(BACK_HOME_TOPIC, () => {
-          PubSub.unsubscribe(tokenHome);
-          PubSub.unsubscribe(tokenReplay);
-          DomElements.clearGame();
-          showHomeScreen();
-        });
-        DomElements.showGameOverModal(
-          REPLAY_TOPIC,
-          BACK_HOME_TOPIC,
-          players[ENEMY].getName()
-        );
-        return;
+      // check if game over
+      gameOver = players[PLAYER].getGameboard().areAllShipsSunk();
+      if (gameOver) {
+        winner = players[ENEMY].getName();
+        break;
       }
-      tokenAttack = PubSub.subscribe(ATTACK_TOPIC, attackSub);
-    };
-
-    tokenAttack = PubSub.subscribe(ATTACK_TOPIC, attackSub);
+    }
+    // show game over modal
+    let tokenReplay = '';
+    let tokenHome = '';
+    const REPLAY_TOPIC = 'replay';
+    const BACK_HOME_TOPIC = 'backHome';
+    tokenReplay = PubSub.subscribe(REPLAY_TOPIC, () => {
+      PubSub.unsubscribe(tokenReplay);
+      PubSub.unsubscribe(tokenHome);
+      DomElements.clearGame();
+      cpuVsPlayer();
+    });
+    tokenHome = PubSub.subscribe(BACK_HOME_TOPIC, () => {
+      PubSub.unsubscribe(tokenReplay);
+      PubSub.unsubscribe(tokenHome);
+      DomElements.clearGame();
+      showHomeScreen();
+    });
+    DomElements.showGameOverModal(REPLAY_TOPIC, BACK_HOME_TOPIC, winner);
   };
 
   const PlayerVsPlayer = async () => {

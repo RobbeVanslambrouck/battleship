@@ -2,7 +2,7 @@
 
 $headerHeigt: 5rem;
 $footerHeigt: 5rem;
-$tileSide: 3rem;
+$tileSide: calc(min(max((100vw / 26), (100vh - $headerHeigt - $footerHeigt)/ 26), min((100vw / 12), (100vh - $headerHeigt - $footerHeigt)/ 12)));
 $tileBorder: 2px solid #83EB21;
 $waterColor: #122901;
 $shipColor: #6FC81A;
@@ -15,10 +15,10 @@ $hitColor: #b11313;
     display: inline-block;
     width: calc($tileSide/2);
     height: calc($tileSide/2);
-    margin: 4px calc($tileSide/2) calc($tileSide/2) 4px;
+    margin: calc(3 * $tileSide/20) 0 0 calc(3 * $tileSide/20);
     background-color: $pinColor;
     border-radius: 50%;
-    box-shadow: 4px 4px 0 0 darken($pinColor, $amount: 10%);
+    box-shadow: calc($tileSide/10) calc($tileSide/10) 0 0 darken($pinColor, $amount: 10%);
 
   }
 }
@@ -26,10 +26,12 @@ $hitColor: #b11313;
 @mixin hoverTarget {
   @keyframes tilehover {
     0% { background-color: $missColor;
-      box-shadow: 4px 4px 0 0 darken($missColor, $amount: 10%);
+      margin: 1px 0 0 1px;
+      box-shadow: calc($tileSide/10) calc($tileSide/10) 0 0 darken($missColor, $amount: 10%);
     }
     100% { background-color: $hitColor;
-      box-shadow: 4px 4px 0 0 darken($hitColor, $amount: 10%);
+      margin: calc(3 * $tileSide/20) 0 0 calc(3 * $tileSide/20);
+      box-shadow: calc($tileSide/10) calc($tileSide/10) 0 0 darken($hitColor, $amount: 10%);
     }
   }
   &:hover {
@@ -194,7 +196,7 @@ main {
     padding: 20px;
     border: 1px solid black;
     border-radius: 1rem;
-    width: 50rem;
+    max-width: 50rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -203,6 +205,7 @@ main {
     .modal-title {
       font-size: 5rem;
       text-transform: capitalize;
+      text-align: center;
     }
     .modal-msg {
       font-size: 2.5rem;
@@ -210,8 +213,8 @@ main {
     }
 
     button {
-      width: 30%;
-      height: 3rem;
+      width: 15rem;
+      line-height: 3rem;
       font-family: inherit;
       font-size: 1.5rem;
       text-transform: capitalize;

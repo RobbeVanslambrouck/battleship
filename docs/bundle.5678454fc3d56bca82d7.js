@@ -23,12 +23,12 @@ __webpack_require__.r(__webpack_exports__);
 var App = function () {
   var showHomeScreen = function showHomeScreen() {
     var PLAY_GAME_TOPIC = 'btnPlayGame';
+    pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().clearAllSubscriptions(PLAY_GAME_TOPIC);
     var gameModes = _game__WEBPACK_IMPORTED_MODULE_2__["default"].getGameModes().map(function (mode) {
       return mode.toLocaleLowerCase().replaceAll('_', ' ');
     });
     _domElements__WEBPACK_IMPORTED_MODULE_1__["default"].renderHomePage(PLAY_GAME_TOPIC, gameModes);
     var playGameToken = '';
-    console.log(PLAY_GAME_TOPIC);
     playGameToken = pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().subscribe(PLAY_GAME_TOPIC, function (msg, data) {
       var gameMode = data.gameMode.replaceAll(' ', '_').toUpperCase();
       pubsub_js__WEBPACK_IMPORTED_MODULE_0___default().unsubscribe(playGameToken);
@@ -38,6 +38,14 @@ var App = function () {
   };
 
   var start = function start() {
+    var h1 = document.querySelector('#title-link');
+
+    h1.onclick = function (e) {
+      e.preventDefault();
+      _domElements__WEBPACK_IMPORTED_MODULE_1__["default"].clearGame();
+      App.start();
+    };
+
     showHomeScreen();
   };
 
@@ -169,6 +177,11 @@ var DomElements = function () {
   var renderHomePage = function renderHomePage(playSubTopic) {
     var gameModes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
     var main = document.querySelector('main');
+
+    if (document.querySelector('.home')) {
+      document.querySelector('.home').remove();
+    }
+
     var divHome = document.createElement('div');
     divHome.classList.add('home');
     var selectGameMode = document.createElement('select');
@@ -284,7 +297,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 
 var Game = function () {
-  var gameModes = ['CPU_VS_PLAYER', 'CPU_FIGHT', 'PLAYER_VS_PLAYER'];
+  var gameModes = ['CPU_VS_PLAYER', 'CPU_VS_CPU', 'PLAYER_VS_PLAYER'];
   var gameMode = gameModes[1];
 
   var getGameModes = function getGameModes() {
@@ -600,7 +613,7 @@ var Game = function () {
   }();
 
   var startGame = function startGame() {
-    if (gameMode === 'CPU_FIGHT') {
+    if (gameMode === 'CPU_VS_CPU') {
       cpuVsCpu();
       return;
     }
@@ -2303,4 +2316,4 @@ _app__WEBPACK_IMPORTED_MODULE_2__["default"].start();
 
 /******/ })()
 ;
-//# sourceMappingURL=bundle.d5d7d787d02fc3a6fe69.js.map
+//# sourceMappingURL=bundle.5678454fc3d56bca82d7.js.map

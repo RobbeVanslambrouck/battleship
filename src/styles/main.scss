@@ -238,4 +238,9 @@ footer {
   line-height: $footerHeigt;
   text-align: center;
   box-shadow: 3px -3px 10px 3px #ddd;
+
+  a {
+    text-decoration: none;
+    color: black;
+  }
 }

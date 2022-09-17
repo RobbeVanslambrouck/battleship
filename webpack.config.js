@@ -53,6 +53,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'battleship',
+      favicon: 'src/radar-icon.png',
       filename: 'index.html',
       template: 'src/template.html',
     }),

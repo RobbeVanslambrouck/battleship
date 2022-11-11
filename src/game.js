@@ -70,7 +70,7 @@ const Game = (() => {
 
     DomElements.updateBoard(
       opponentBoardId,
-      opponent.getGameboard().getBoard(),
+      opponent.getGameBoard().getBoard(),
       inputTopic
     );
     return data;
@@ -80,7 +80,7 @@ const Game = (() => {
     players.forEach((player) => {
       const ships = [Ship(5), Ship(4), Ship(3), Ship(3), Ship(2)];
       for (let i = 0; i < ships.length; i += 1) {
-        player.getGameboard().placeShipRandomly(ships[i]);
+        player.getGameBoard().placeShipRandomly(ships[i]);
       }
     });
   };
@@ -94,19 +94,19 @@ const Game = (() => {
 
     placeShipsOnPlayersBoards(players);
 
-    DomElements.renderBoard(players[0].getGameboard().getBoard(), 'player', 0);
-    DomElements.renderBoard(players[1].getGameboard().getBoard(), 'player', 1);
+    DomElements.renderBoard(players[0].getGameBoard().getBoard(), 'player', 0);
+    DomElements.renderBoard(players[1].getGameBoard().getBoard(), 'player', 1);
     while (!gameOver) {
       await players[0].AISmartTurn(players[1]);
-      DomElements.updateBoard(1, players[1].getGameboard().getBoard());
-      gameOver = players[1].getGameboard().areAllShipsSunk();
+      DomElements.updateBoard(1, players[1].getGameBoard().getBoard());
+      gameOver = players[1].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[0].getName();
         break;
       }
       await players[1].AISmartTurn(players[0]);
-      DomElements.updateBoard(0, players[0].getGameboard().getBoard());
-      gameOver = players[0].getGameboard().areAllShipsSunk();
+      DomElements.updateBoard(0, players[0].getGameBoard().getBoard());
+      gameOver = players[0].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[1].getName();
       }
@@ -126,24 +126,24 @@ const Game = (() => {
     placeShipsOnPlayersBoards(players);
 
     DomElements.renderBoard(
-      players[1].getGameboard().getBoard(),
+      players[1].getGameBoard().getBoard(),
       'enemy',
       1,
       INPUT_TOPIC
     );
 
-    DomElements.renderBoard(players[0].getGameboard().getBoard(), 'player', 0);
+    DomElements.renderBoard(players[0].getGameBoard().getBoard(), 'player', 0);
 
     while (!gameOver) {
       await playerTurn(players[0], players[1], 1, INPUT_TOPIC);
-      gameOver = players[1].getGameboard().areAllShipsSunk();
+      gameOver = players[1].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[0].getName();
         break;
       }
       await players[1].AISmartTurn(players[0], 300);
-      DomElements.updateBoard(0, players[0].getGameboard().getBoard());
-      gameOver = players[0].getGameboard().areAllShipsSunk();
+      DomElements.updateBoard(0, players[0].getGameBoard().getBoard());
+      gameOver = players[0].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[1].getName();
         break;
@@ -165,14 +165,14 @@ const Game = (() => {
     placeShipsOnPlayersBoards(players);
 
     DomElements.renderBoard(
-      players[0].getGameboard().getBoard(),
+      players[0].getGameBoard().getBoard(),
       'enemy',
       0,
       P2_INPUT_TOPIC
     );
 
     DomElements.renderBoard(
-      players[1].getGameboard().getBoard(),
+      players[1].getGameBoard().getBoard(),
       'enemy',
       1,
       P1_INPUT_TOPIC
@@ -180,13 +180,13 @@ const Game = (() => {
 
     while (!gameOver) {
       await playerTurn(players[0], players[1], 1, P1_INPUT_TOPIC);
-      gameOver = players[1].getGameboard().areAllShipsSunk();
+      gameOver = players[1].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[0].getName();
         break;
       }
       await playerTurn(players[1], players[0], 0, P2_INPUT_TOPIC);
-      gameOver = players[0].getGameboard().areAllShipsSunk();
+      gameOver = players[0].getGameBoard().areAllShipsSunk();
       if (gameOver) {
         winner = players[1].getName();
         break;

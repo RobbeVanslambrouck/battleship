@@ -1,14 +1,14 @@
 import shuffle from './helper';
 
 /*
-  the gameboard is an array were the tiles are: 
+  the gameBoard is an array were the tiles are: 
   - 'w' (water)
   - 'h' (hit)
   - 'm' (miss)
   - 's' (sunk)
   - { ship, x, y, dir} (a ship object with the coordinates of the fist schip section and its direction either 'h' or 'v')
 */
-const Gameboard = (size = 10) => {
+const GameBoard = (size = 10) => {
   const board = [];
   for (let i = 0; i < size; i += 1) {
     board[i] = new Array(size).fill('w');
@@ -18,7 +18,7 @@ const Gameboard = (size = 10) => {
 
   const getBoard = () => board;
 
-  const placeSunkShipOnGameboard = ({ ship, x, y, dir }) => {
+  const placeSunkShipOnGameBoard = ({ ship, x, y, dir }) => {
     let posX = x;
     let posY = y;
     for (let i = 0; i < ship.getLength(); i += 1) {
@@ -54,7 +54,7 @@ const Gameboard = (size = 10) => {
 
     shipInfo.ship.hitAt(place);
     if (shipInfo.ship.isSunk()) {
-      placeSunkShipOnGameboard(shipInfo);
+      placeSunkShipOnGameBoard(shipInfo);
       board[y][x] = 's';
       return 'hit and sunk';
     }
@@ -123,7 +123,7 @@ const Gameboard = (size = 10) => {
     }
     return true;
   };
-  const placeShipOnGameboard = (ship, x, y, dir) => {
+  const placeShipOnGameBoard = (ship, x, y, dir) => {
     let posX = x;
     let posY = y;
     ships.push({ ship, x, y, dir });
@@ -140,7 +140,7 @@ const Gameboard = (size = 10) => {
 
   const placeShip = (ship, x, y, dir = 'h', allowShipBordering = true) => {
     if (canPlaceShip(ship, x, y, dir, allowShipBordering)) {
-      placeShipOnGameboard(ship, x, y, dir);
+      placeShipOnGameBoard(ship, x, y, dir);
       return true;
     }
     return false;
@@ -172,7 +172,7 @@ const Gameboard = (size = 10) => {
         dir = directions[0];
       }
       if (canPlaceShip(ship, pos.x, pos.y, dir, false)) {
-        placeShipOnGameboard(ship, pos.x, pos.y, dir);
+        placeShipOnGameBoard(ship, pos.x, pos.y, dir);
         return true;
       }
     }
@@ -197,4 +197,4 @@ const Gameboard = (size = 10) => {
   };
 };
 
-export default Gameboard;
+export default GameBoard;

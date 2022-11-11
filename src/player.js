@@ -1,23 +1,23 @@
-import Gameboard from './gameboard';
+import GameBoard from './gameBoard';
 import { randInt, delay } from './helper';
 
 const Player = (name) => {
   let thisName = name;
-  let gameboard = Gameboard(10);
+  let gameBoard = GameBoard(10);
   const getName = () => thisName;
   const SetName = (newName) => {
     thisName = newName;
   };
-  const getGameboard = () => gameboard;
-  const setGameboard = (NewBoard) => {
-    gameboard = NewBoard;
+  const getGameBoard = () => gameBoard;
+  const setGameBoard = (NewBoard) => {
+    gameBoard = NewBoard;
   };
 
-  const turn = (x, y, enemy) => enemy.getGameboard().receiveAttack(x, y);
+  const turn = (x, y, enemy) => enemy.getGameBoard().receiveAttack(x, y);
 
   const AIRandomTurn = (enemy) => {
     const attackTable = [];
-    const enemyBoard = enemy.getGameboard().getBoard();
+    const enemyBoard = enemy.getGameBoard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
         if (enemyBoard[i][j] !== 'h' && enemyBoard[i][j] !== 'm') {
@@ -26,7 +26,7 @@ const Player = (name) => {
       }
     }
     const i = randInt(0, attackTable.length - 1);
-    enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
+    enemy.getGameBoard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 
   const getTileValue = (x, y, board) => {
@@ -85,7 +85,7 @@ const Player = (name) => {
   const AISmartTurn = async (enemy, milliseconds = 100) => {
     let attackTable = [];
     let maxTileValue = -Infinity;
-    const enemyBoard = enemy.getGameboard().getBoard();
+    const enemyBoard = enemy.getGameBoard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
         if (enemyBoard[i][j] === 'w' || typeof enemyBoard[i][j] === 'object') {
@@ -104,12 +104,12 @@ const Player = (name) => {
     }
     const i = randInt(0, attackTable.length - 1);
     await delay(milliseconds);
-    enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
+    enemy.getGameBoard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 
   const AIImpossibleTurn = (enemy) => {
     const attackTable = [];
-    const enemyBoard = enemy.getGameboard().getBoard();
+    const enemyBoard = enemy.getGameBoard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
         if (typeof enemyBoard[i][j] === 'object') {
@@ -122,12 +122,12 @@ const Player = (name) => {
       return;
     }
     const i = randInt(0, attackTable.length - 1);
-    enemy.getGameboard().receiveAttack(attackTable[i].x, attackTable[i].y);
+    enemy.getGameBoard().receiveAttack(attackTable[i].x, attackTable[i].y);
   };
 
-  const AIInstaKillTurn = (enemy) => {
+  const AIInstantKillTurn = (enemy) => {
     const attackTable = [];
-    const enemyBoard = enemy.getGameboard().getBoard();
+    const enemyBoard = enemy.getGameBoard().getBoard();
     for (let i = 0; i < enemyBoard.length; i += 1) {
       for (let j = 0; j < enemyBoard[i].length; j += 1) {
         if (typeof enemyBoard[i][j] === 'object') {
@@ -140,20 +140,20 @@ const Player = (name) => {
       return;
     }
     attackTable.forEach((attack) => {
-      enemy.getGameboard().receiveAttack(attack.x, attack.y);
+      enemy.getGameBoard().receiveAttack(attack.x, attack.y);
     });
   };
 
   return {
     getName,
     SetName,
-    getGameboard,
-    setGameboard,
+    getGameBoard,
+    setGameBoard,
     turn,
     AIRandomTurn,
     AISmartTurn,
     AIImpossibleTurn,
-    AIInstaKillTurn,
+    AIInstantKillTurn,
   };
 };
 

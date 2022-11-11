@@ -1,6 +1,6 @@
 import Ship from './ship';
 
-describe('Ship: values and methodes', () => {
+describe('Ship: values and methods', () => {
   test('ship length', () => {
     const ship = Ship(2);
     expect(ship.getLength()).toBe(2);
